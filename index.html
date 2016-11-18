@@ -157,34 +157,151 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><em>iOS开发笔记——WKWebView API整理</em></p>
-<h2 id="WKWebView的属性和方法"><a href="#WKWebView的属性和方法" class="headerlink" title="###WKWebView的属性和方法"></a>###WKWebView的属性和方法</h2><p>WKWebView头文件如下：</p>
-<p>// webView的配置<br>@property (nonatomic, readonly, copy) WKWebViewConfiguration <em>configuration;<br>// 导航代理<br>@property (nullable, nonatomic, weak) id <wknavigationdelegate> navigationDelegate;<br>// UI交互代理<br>@property (nullable, nonatomic, weak) id <wkuidelegate> UIDelegate;<br>// 页面前进和后退列表<br>@property (nonatomic, readonly, strong) WKBackForwardList </wkuidelegate></wknavigationdelegate></em>backForwardList;<br>//默认初始化方法</p>
+        <h2 id="WKWebView的属性和方法"><a href="#WKWebView的属性和方法" class="headerlink" title="###WKWebView的属性和方法"></a>###WKWebView的属性和方法</h2><p>WKWebView头文件如下：</p>
+<p>// webView的配置<br>@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;</p>
+<p>// 导航代理<br>@property (nullable, nonatomic, weak) id <wknavigationdelegate> navigationDelegate;</wknavigationdelegate></p>
+<p>// UI交互代理<br>@property (nullable, nonatomic, weak) id <wkuidelegate> UIDelegate;</wkuidelegate></p>
+<p>// 页面前进和后退列表<br>@property (nonatomic, readonly, strong) WKBackForwardList *backForwardList;</p>
+<p>//默认初始化方法</p>
 <ul>
-<li>(instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;<br>//不会用到</li>
-<li>(nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;<br>//加载请求</li>
-<li>(nullable WKNavigation <em>)loadRequest:(NSURLRequest </em>)request;<br>//加载URL</li>
-<li>(nullable WKNavigation <em>)loadFileURL:(NSURL </em>)URL allowingReadAccessToURL:(NSURL *)readAccessURL API_AVAILABLE(macosx(10.11), ios(9.0));<br>//加载Html</li>
-<li>(nullable WKNavigation <em>)loadHTMLString:(NSString </em>)string baseURL:(nullable NSURL *)baseURL;<br>//加载Data</li>
-<li>(nullable WKNavigation <em>)loadData:(NSData </em>)data MIMEType:(NSString <em>)MIMEType characterEncodingName:(NSString </em>)characterEncodingName baseURL:(NSURL *)baseURL API_AVAILABLE(macosx(10.11), ios(9.0));<br>//前进或者后退到指定页面</li>
-<li>(nullable WKNavigation <em>)goToBackForwardListItem:(WKBackForwardListItem </em>)item;<br>//页面标题，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSString <em>title;<br>//当前请求的URL，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSURL </em>URL;<br>//是否正在加载，只读属性，修改需通过KVO<br>@property (nonatomic, readonly, getter=isLoading) BOOL loading;<br>//加载进度 【0，1】<br>@property (nonatomic, readonly) double estimatedProgress;<br>//标示页面中的所有资源是否通过安全加密链接来加载（这里说的是https么？）<br>@property (nonatomic, readonly) BOOL hasOnlySecureContent;<br>//当前导航的证书链（什么是证书链）<br>@property (nonatomic, readonly, nullable) SecTrustRef serverTrust API_AVAILABLE(macosx(10.12), ios(10.0));<br>//能否执行goBack操作<br>@property (nonatomic, readonly) BOOL canGoBack;<br>//能否执行goForward操作<br>@property (nonatomic, readonly) BOOL canGoForward;<br>//返回上以页面，如果不能返回则什么都不做</li>
-<li>(nullable WKNavigation *)goBack;<br>//进入下一页面，如果不能进入则什么都不做</li>
-<li>(nullable WKNavigation *)goForward;<br>//重载当前页面</li>
-<li>(nullable WKNavigation *)reload;<br>//从原始URL重载</li>
-<li>(nullable WKNavigation *)reloadFromOrigin;<br>//停止加载数据</li>
-<li>(void)stopLoading;<br>//执行JS代码</li>
-<li>(void)evaluateJavaScript:(NSString <em>)javaScriptString completionHandler:(void (^ _Nullable)(_Nullable id, NSError </em> _Nullable error))completionHandler;<br>//是否支持左、右滑动手势来前进下一页面或后退到上一页面<br>@property (nonatomic) BOOL allowsBackForwardNavigationGestures;<br>//自定义 userAgent，如果没有则为nil （userAgent是什么鬼）<br>@property (nullable, nonatomic, copy) NSString *customUserAgent API_AVAILABLE(macosx(10.11), ios(9.0));<br>//是否允许链接预览 iOS默认为NO<br>@property (nonatomic) BOOL allowsLinkPreview API_AVAILABLE(macosx(10.11), ios(9.0));</li>
+<li>(instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;</li>
 </ul>
+<p>//不会用到</p>
+<ul>
+<li>(nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;</li>
+</ul>
+<p>//加载请求</p>
+<ul>
+<li>(nullable WKNavigation <em>)loadRequest:(NSURLRequest </em>)request;</li>
+</ul>
+<p>//加载URL</p>
+<ul>
+<li>(nullable WKNavigation <em>)loadFileURL:(NSURL </em>)URL allowingReadAccessToURL:(NSURL *)readAccessURL API_AVAILABLE(macosx(10.11), ios(9.0));</li>
+</ul>
+<p>//加载Html</p>
+<ul>
+<li>(nullable WKNavigation <em>)loadHTMLString:(NSString </em>)string baseURL:(nullable NSURL *)baseURL;</li>
+</ul>
+<p>//加载Data</p>
+<ul>
+<li>(nullable WKNavigation <em>)loadData:(NSData </em>)data MIMEType:(NSString <em>)MIMEType characterEncodingName:(NSString </em>)characterEncodingName baseURL:(NSURL *)baseURL API_AVAILABLE(macosx(10.11), ios(9.0));</li>
+</ul>
+<p>//前进或者后退到指定页面</p>
+<ul>
+<li>(nullable WKNavigation <em>)goToBackForwardListItem:(WKBackForwardListItem </em>)item;</li>
+</ul>
+<p>//页面标题，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSString *title;</p>
+<p>//当前请求的URL，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSURL *URL;</p>
+<p>//是否正在加载，只读属性，修改需通过KVO<br>@property (nonatomic, readonly, getter=isLoading) BOOL loading;</p>
+<p>//加载进度 【0，1】<br>@property (nonatomic, readonly) double estimatedProgress;</p>
+<p>//标示页面中的所有资源是否通过安全加密链接来加载（这里说的是https么？）<br>@property (nonatomic, readonly) BOOL hasOnlySecureContent;</p>
+<p>//当前导航的证书链（什么是证书链）<br>@property (nonatomic, readonly, nullable) SecTrustRef serverTrust API_AVAILABLE(macosx(10.12), ios(10.0));</p>
+<p>//能否执行goBack操作<br>@property (nonatomic, readonly) BOOL canGoBack;</p>
+<p>//能否执行goForward操作<br>@property (nonatomic, readonly) BOOL canGoForward;</p>
+<p>//返回上以页面，如果不能返回则什么都不做</p>
+<ul>
+<li>(nullable WKNavigation *)goBack;</li>
+</ul>
+<p>//进入下一页面，如果不能进入则什么都不做</p>
+<ul>
+<li>(nullable WKNavigation *)goForward;</li>
+</ul>
+<p>//重载当前页面</p>
+<ul>
+<li>(nullable WKNavigation *)reload;</li>
+</ul>
+<p>//从原始URL重载</p>
+<ul>
+<li>(nullable WKNavigation *)reloadFromOrigin;</li>
+</ul>
+<p>//停止加载数据</p>
+<ul>
+<li>(void)stopLoading;</li>
+</ul>
+<p>//执行JS代码</p>
+<ul>
+<li>(void)evaluateJavaScript:(NSString <em>)javaScriptString completionHandler:(void (^ _Nullable)(_Nullable id, NSError </em> _Nullable error))completionHandler;</li>
+</ul>
+<p>//是否支持左、右滑动手势来前进下一页面或后退到上一页面<br>@property (nonatomic) BOOL allowsBackForwardNavigationGestures;</p>
+<p>//自定义 userAgent，如果没有则为nil （userAgent是什么鬼）<br>@property (nullable, nonatomic, copy) NSString *customUserAgent API_AVAILABLE(macosx(10.11), ios(9.0));</p>
+<p>//是否允许链接预览 iOS默认为NO<br>@property (nonatomic) BOOL allowsLinkPreview API_AVAILABLE(macosx(10.11), ios(9.0));</p>
 <p>#if TARGET_OS_IPHONE<br>//<br>@property (nonatomic, readonly, strong) UIScrollView *scrollView;</p>
 <p>#endif</p>
-<p>#if !TARGET_OS_IPHONE<br>//是否支持放大手势，默认为NO<br>@property (nonatomic) BOOL allowsMagnification;<br>//放大因子，放大倍数 默认为1<br>@property (nonatomic) CGFloat magnification;<br>//根据设置的书房因子来缩放页面，并居中显示结果在制定的点</p>
+<p>#if !TARGET_OS_IPHONE<br>//是否支持放大手势，默认为NO<br>@property (nonatomic) BOOL allowsMagnification;</p>
+<p>//放大因子，放大倍数 默认为1<br>@property (nonatomic) CGFloat magnification;</p>
+<p>//根据设置的书房因子来缩放页面，并居中显示结果在制定的点</p>
 <ul>
-<li>(void)setMagnification:(CGFloat)magnification centeredAtPoint:(CGPoint)point;<br>#endif<br>###WKWebViewConfiguration - webView的配置</li>
+<li>(void)setMagnification:(CGFloat)magnification centeredAtPoint:(CGPoint)point;<br>#endif</li>
 </ul>
-<hr>
-<p>WKWebViewConfiguration <em>config = [[WKWebViewConfiguration alloc] init];<br>configuration中的一些属性介绍：
-</em>WKPreferences偏好设置*</p>
+<h2 id="WKWebViewConfiguration-webView的配置"><a href="#WKWebViewConfiguration-webView的配置" class="headerlink" title="###WKWebViewConfiguration - webView的配置"></a>###WKWebViewConfiguration - webView的配置</h2><p>WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];</p>
+<p>####configuration中的一些属性介绍：</p>
+<blockquote>
+<p>WKPreferences偏好设置</p>
+</blockquote>
+<p>// 设置偏好设置<br>config.preferences = [[WKPreferences alloc] init];<br>// 最小字体大小 默认为0<br>config.preferences.minimumFontSize = 10;<br>// 是否可以使用javaScri默认认为YES<br>config.preferences.javaScriptEnabled = YES;<br>// 在iOS上默认为NO，表示不能自动通过窗口打开<br>config.preferences.javaScriptCanOpenWindowsAutomatically = NO;</p>
+<blockquote>
+<p>WKProcessPool内容处理池<br>WKProcessPool没有公开的属性或者方法，用处暂时不清楚<br>config.processPool = [[WKProcessPool alloc] init];<br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
+<p>WKUserContentController内容交互控制器<br>这个类用于实现JS和webView的内容交互</p>
+</blockquote>
+<p>//只读属性，所有添加的WKUserScript都在这里可以获取到<br>@property (nonatomic, readonly, copy) NSArray<wkuserscript *=""> *userScripts;<br>//注入JS脚本</wkuserscript></p>
+<ul>
+<li>(void)addUserScript:(WKUserScript *)userScript;<br>//移除所有注入的JS</li>
+<li>(void)removeAllUserScripts;<br>//添加scriptMessageHandler，之后可以通过<br>//window.webkit.messageHandlers.<name.postmessage(<messagebody>)&gt;发送消息<br>//比如JS调用我们原生的方法，就可以通过这种方式</name.postmessage(<messagebody></li>
+<li>(void)addScriptMessageHandler:(id <wkscriptmessagehandler>)scriptMessageHandler name:(NSString *)name;<br>//根据name移除注入的scriptMessageHandler</wkscriptmessagehandler></li>
+<li>(void)removeScriptMessageHandlerForName:(NSString *)name;</li>
+</ul>
+<p>######WKUserScript<br>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
+<p>//JS源码<br>@property (nonatomic, readonly, copy) NSString *source;<br>//JS注入时间<br>@property (nonatomic, readonly) WKUserScriptInjectionTime injectionTime;<br>//表示JS是否应该注入到所有的frames种还是只有main frame<br>@property (nonatomic, readonly, getter=isForMainFrameOnly) BOOL forMainFrameOnly;<br>//初始化方法</p>
+<ul>
+<li>(instancetype)initWithSource:(NSString *)source injectionTime:(WKUserScriptInjectionTime)injectionTime forMainFrameOnly:(BOOL)forMainFrameOnly;</li>
+</ul>
+<p><em>WKUserScriptInjectionTime</em></p>
+<p>typedef NS_ENUM(NSInteger, WKUserScriptInjectionTime) {<br>WKUserScriptInjectionTimeAtDocumentStart,//文档开始加载时注入<br>WKUserScriptInjectionTimeAtDocumentEnd //加载结束时注入<br>} NS_ENUM_AVAILABLE(10_10, 8_0);</p>
+<p>这里有两个概念没有提到分别是WKWebsiteDataStore（存储的web内容）和WKWebsiteDataRecord（website的数据存储记录类型），他们都是iOS9.0以后才可用，之后会对这里进行补充，暂时略过</p>
 <p>###WKNavigationDelegate</p>
+<p>@protocol WKNavigationDelegate <nsobject></nsobject></p>
+<p>@optional</p>
+<p>// 决定导航的动作，通常用于处理跨域的链接能否导航。WebKit对跨域进行了安全检查限制，不允许跨域，因此我们要对不能跨域的链接<br>// 单独处理。但是，对于Safari是允许跨域的，不用这么处理。<br>// 这个是决定是否Request</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView decidePolicyForNavigationAction:(WKNavigationAction </em>)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler;</li>
+</ul>
+<p>// 决定是否接收响应<br>// 这个是决定是否接收response<br>// 要获取response，通过WKNavigationResponse对象获取</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView decidePolicyForNavigationResponse:(WKNavigationResponse </em>)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler;</li>
+</ul>
+<p>// 当main frame的导航开始请求时，会调用此方法</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didStartProvisionalNavigation:(null_unspecified WKNavigation </em>)navigation;</li>
+</ul>
+<p>// 当main frame接收到服务重定向时，会回调此方法</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didReceiveServerRedirectForProvisionalNavigation:(null_unspecified WKNavigation </em>)navigation;</li>
+</ul>
+<p>// 当main frame开始加载数据失败时，会回调</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didFailProvisionalNavigation:(null_unspecified WKNavigation </em>)navigation withError:(NSError *)error;</li>
+</ul>
+<p>// 当main frame的web内容开始到达时，会回调</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didCommitNavigation:(null_unspecified WKNavigation </em>)navigation;</li>
+</ul>
+<p>// 当main frame导航完成时，会回调</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didFinishNavigation:(null_unspecified WKNavigation </em>)navigation;</li>
+</ul>
+<p>// 当main frame最后下载数据失败时，会回调</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didFailNavigation:(null_unspecified WKNavigation </em>)navigation withError:(NSError *)error;</li>
+</ul>
+<p>// 这与用于授权验证的API，与AFN、UIWebView的授权验证API是一样的</p>
+<ul>
+<li>(void)webView:(WKWebView <em>)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge </em>)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *__nullable credential))completionHandler;</li>
+</ul>
+<p>// 当web content处理完成时，会回调</p>
+<ul>
+<li>(void)webViewWebContentProcessDidTerminate:(WKWebView *)webView NS_AVAILABLE(10_11, 9_0);</li>
+</ul>
+<p>@end</p>
 <p>###WKUIDelegate</p>
 <p>###WKScriptMessageHandler</p>
 
