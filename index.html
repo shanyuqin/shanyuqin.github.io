@@ -139,7 +139,7 @@
       <div class="body-wrap">
         
   
-    <article id="post-我的博客为什么会一直404" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-iOS开发笔记——WKWebViewAPI整理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <input type="hidden" class="isFancy" />
@@ -149,7 +149,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/11/16/我的博客为什么会一直404/">我的博客为什么会一直404</a>
+      <a class="article-title" href="/2016/11/18/iOS开发笔记——WKWebViewAPI整理/">iOS开发笔记——WKWebViewAPI整理</a>
     </h1>
   
 
@@ -157,14 +157,43 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>不要试图删除所有博文，当删除所有博文之后，index.html将被删除，导致404。所以当出现404的时候先查看你是否将所有的博文全部删除。
-</code></pre>
+        <p><em>iOS开发笔记——WKWebView API整理</em></p>
+<h2 id="WKWebView的属性和方法"><a href="#WKWebView的属性和方法" class="headerlink" title="###WKWebView的属性和方法"></a>###WKWebView的属性和方法</h2><p>WKWebView头文件如下：</p>
+<p>// webView的配置<br>@property (nonatomic, readonly, copy) WKWebViewConfiguration <em>configuration;<br>// 导航代理<br>@property (nullable, nonatomic, weak) id <wknavigationdelegate> navigationDelegate;<br>// UI交互代理<br>@property (nullable, nonatomic, weak) id <wkuidelegate> UIDelegate;<br>// 页面前进和后退列表<br>@property (nonatomic, readonly, strong) WKBackForwardList </wkuidelegate></wknavigationdelegate></em>backForwardList;<br>//默认初始化方法</p>
+<ul>
+<li>(instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;<br>//不会用到</li>
+<li>(nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;<br>//加载请求</li>
+<li>(nullable WKNavigation <em>)loadRequest:(NSURLRequest </em>)request;<br>//加载URL</li>
+<li>(nullable WKNavigation <em>)loadFileURL:(NSURL </em>)URL allowingReadAccessToURL:(NSURL *)readAccessURL API_AVAILABLE(macosx(10.11), ios(9.0));<br>//加载Html</li>
+<li>(nullable WKNavigation <em>)loadHTMLString:(NSString </em>)string baseURL:(nullable NSURL *)baseURL;<br>//加载Data</li>
+<li>(nullable WKNavigation <em>)loadData:(NSData </em>)data MIMEType:(NSString <em>)MIMEType characterEncodingName:(NSString </em>)characterEncodingName baseURL:(NSURL *)baseURL API_AVAILABLE(macosx(10.11), ios(9.0));<br>//前进或者后退到指定页面</li>
+<li>(nullable WKNavigation <em>)goToBackForwardListItem:(WKBackForwardListItem </em>)item;<br>//页面标题，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSString <em>title;<br>//当前请求的URL，只读属性，修改需通过KVO<br>@property (nullable, nonatomic, readonly, copy) NSURL </em>URL;<br>//是否正在加载，只读属性，修改需通过KVO<br>@property (nonatomic, readonly, getter=isLoading) BOOL loading;<br>//加载进度 【0，1】<br>@property (nonatomic, readonly) double estimatedProgress;<br>//标示页面中的所有资源是否通过安全加密链接来加载（这里说的是https么？）<br>@property (nonatomic, readonly) BOOL hasOnlySecureContent;<br>//当前导航的证书链（什么是证书链）<br>@property (nonatomic, readonly, nullable) SecTrustRef serverTrust API_AVAILABLE(macosx(10.12), ios(10.0));<br>//能否执行goBack操作<br>@property (nonatomic, readonly) BOOL canGoBack;<br>//能否执行goForward操作<br>@property (nonatomic, readonly) BOOL canGoForward;<br>//返回上以页面，如果不能返回则什么都不做</li>
+<li>(nullable WKNavigation *)goBack;<br>//进入下一页面，如果不能进入则什么都不做</li>
+<li>(nullable WKNavigation *)goForward;<br>//重载当前页面</li>
+<li>(nullable WKNavigation *)reload;<br>//从原始URL重载</li>
+<li>(nullable WKNavigation *)reloadFromOrigin;<br>//停止加载数据</li>
+<li>(void)stopLoading;<br>//执行JS代码</li>
+<li>(void)evaluateJavaScript:(NSString <em>)javaScriptString completionHandler:(void (^ _Nullable)(_Nullable id, NSError </em> _Nullable error))completionHandler;<br>//是否支持左、右滑动手势来前进下一页面或后退到上一页面<br>@property (nonatomic) BOOL allowsBackForwardNavigationGestures;<br>//自定义 userAgent，如果没有则为nil （userAgent是什么鬼）<br>@property (nullable, nonatomic, copy) NSString *customUserAgent API_AVAILABLE(macosx(10.11), ios(9.0));<br>//是否允许链接预览 iOS默认为NO<br>@property (nonatomic) BOOL allowsLinkPreview API_AVAILABLE(macosx(10.11), ios(9.0));</li>
+</ul>
+<p>#if TARGET_OS_IPHONE<br>//<br>@property (nonatomic, readonly, strong) UIScrollView *scrollView;</p>
+<p>#endif</p>
+<p>#if !TARGET_OS_IPHONE<br>//是否支持放大手势，默认为NO<br>@property (nonatomic) BOOL allowsMagnification;<br>//放大因子，放大倍数 默认为1<br>@property (nonatomic) CGFloat magnification;<br>//根据设置的书房因子来缩放页面，并居中显示结果在制定的点</p>
+<ul>
+<li>(void)setMagnification:(CGFloat)magnification centeredAtPoint:(CGPoint)point;<br>#endif<br>###WKWebViewConfiguration - webView的配置</li>
+</ul>
+<hr>
+<p>WKWebViewConfiguration <em>config = [[WKWebViewConfiguration alloc] init];<br>configuration中的一些属性介绍：
+</em>WKPreferences偏好设置*</p>
+<p>###WKNavigationDelegate</p>
+<p>###WKUIDelegate</p>
+<p>###WKScriptMessageHandler</p>
+
       
     </div>
     <div class="article-info article-info-index">
       
-      <a href="/2016/11/16/我的博客为什么会一直404/" class="archive-article-date">
-  	<time datetime="2016-11-16T06:24:36.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-16</time>
+      <a href="/2016/11/18/iOS开发笔记——WKWebViewAPI整理/" class="archive-article-date">
+  	<time datetime="2016-11-18T02:27:09.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-18</time>
 </a>
       
       
