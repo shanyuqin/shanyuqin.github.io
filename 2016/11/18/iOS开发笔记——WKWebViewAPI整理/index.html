@@ -26,7 +26,7 @@ WKWebView头文件如下：
 
 // 导航代理
 @property (nullable, nonatomic, weak) id &amp;lt;WKNavigationDelegate&amp;gt">
-<meta property="og:updated_time" content="2016-11-18T07:33:26.000Z">
+<meta property="og:updated_time" content="2016-11-21T13:18:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发笔记——WKWebViewAPI整理">
 <meta name="twitter:description" content="WKWebView的属性和方法
@@ -362,7 +362,137 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView NS_AVAILABLE(10_11, 9_0);
 
 @end
-</code></pre><h3 id="WKUIDelegate"><a href="#WKUIDelegate" class="headerlink" title="WKUIDelegate"></a>WKUIDelegate</h3><h3 id="WKScriptMessageHandler"><a href="#WKScriptMessageHandler" class="headerlink" title="WKScriptMessageHandler"></a>WKScriptMessageHandler</h3>
+</code></pre><blockquote>
+<p>WKNavigationActionPolicy</p>
+</blockquote>
+<p>导航动作决定策略：</p>
+<pre><code>typedef NS_ENUM(NSInteger, WKNavigationActionPolicy) {
+    WKNavigationActionPolicyCancel,//不允许导航，就不会跳转链接
+    WKNavigationActionPolicyAllow,//允许
+} NS_ENUM_AVAILABLE(10_10, 8_0);
+</code></pre><blockquote>
+<p>WKNavigationResponsePolicy</p>
+</blockquote>
+<pre><code>typedef NS_ENUM(NSInteger, WKNavigationResponsePolicy) {
+    WKNavigationResponsePolicyCancel,//不接收响应
+    WKNavigationResponsePolicyAllow,//接收响应
+} NS_ENUM_AVAILABLE(10_10, 8_0);
+</code></pre><blockquote>
+<p>WKNavigationResponse</p>
+</blockquote>
+<p>WKNavigationResponse是导航响应类，通过它可以获取相关响应的信息：</p>
+<pre><code>NS_CLASS_AVAILABLE(10_10, 8_0)
+@interface WKNavigationResponse : NSObject
+
+// 是否是main frame
+@property (nonatomic, readonly, getter=isForMainFrame) BOOL forMainFrame;
+
+// 获取响应response
+@property (nonatomic, readonly, copy) NSURLResponse *response;
+
+// 是否显示MIMEType
+@property (nonatomic, readonly) BOOL canShowMIMEType;
+
+@end
+</code></pre><blockquote>
+<p>WKNavigationAction</p>
+</blockquote>
+<p>WKNavigationAction对象包含关于导航的action的信息，用于make policy decisions。它只有以下几个属性：</p>
+<pre><code>// 正在请求的导航的frame
+@property (nonatomic, readonly, copy) WKFrameInfo *sourceFrame;
+
+// 目标frame，如果这是新的window，它会是nil
+@property (nullable, nonatomic, readonly, copy) WKFrameInfo *targetFrame;
+
+// 导航类型，如下面的小标题WKNavigationType
+@property (nonatomic, readonly) WKNavigationType navigationType;
+
+// 导航的请求
+@property (nonatomic, readonly, copy) NSURLRequest *request;
+</code></pre><p><em>WKNavigationType</em></p>
+<pre><code>typedef NS_ENUM(NSInteger, WKNavigationType) {
+// 链接已经点击
+    WKNavigationTypeLinkActivated,
+    // 表单提交
+    WKNavigationTypeFormSubmitted,
+    // 前进、后退
+    WKNavigationTypeBackForward,
+    // 重新载入
+    WKNavigationTypeReload,
+    // 表单重新提交
+    WKNavigationTypeFormResubmitted,
+    // 其它
+    WKNavigationTypeOther = -1,
+} NS_ENUM_AVAILABLE(10_10, 8_0);
+</code></pre><h3 id="WKUIDelegate"><a href="#WKUIDelegate" class="headerlink" title="WKUIDelegate"></a>WKUIDelegate</h3><pre><code>@protocol WKUIDelegate &lt;NSObject&gt;
+
+@optional
+
+// 创建新的webview
+// 可以指定配置对象、导航动作对象、window特性
+- (nullable WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures;
+
+// webview关闭时回调
+- (void)webViewDidClose:(WKWebView *)webView NS_AVAILABLE(10_11, 9_0);
+
+// 调用JS的alert()方法
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler;
+
+// 调用JS的confirm()方法
+- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler;
+
+// 调用JS的prompt()方法
+- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler;
+
+@end
+</code></pre><h3 id="WKScriptMessageHandler"><a href="#WKScriptMessageHandler" class="headerlink" title="WKScriptMessageHandler"></a>WKScriptMessageHandler</h3><pre><code>// 注入JS对象名称shanyuqinModel，当JS通过shanyuqinModel来调用并发送数据到iOS端时，
+// 我们可以在WKScriptMessageHandler代理中接收到
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@&quot;shanyuqinModel&quot;]) {
+        NSLog(@&quot;shanyuqinModel.body = %@&quot;,message.body);
+    }
+}
+</code></pre><h3 id="WKBackForwardList"><a href="#WKBackForwardList" class="headerlink" title="WKBackForwardList"></a>WKBackForwardList</h3><p>WKBackForwardList表示webview中可以前进或者后退的页面列表。其声明如下:</p>
+<pre><code>NS_CLASS_AVAILABLE(10_10, 8_0)
+@interface WKBackForwardList : NSObject
+
+// 当前正在显示的item（页面）
+@property (nullable, nonatomic, readonly, strong) WKBackForwardListItem *currentItem;
+
+// 后一页，如果没有就是nil
+@property (nullable, nonatomic, readonly, strong) WKBackForwardListItem *backItem;
+
+// 前一页，如果没有就是nil
+@property (nullable, nonatomic, readonly, strong) WKBackForwardListItem *forwardItem;
+
+// 根据下标获取某一个页面的item
+- (nullable WKBackForwardListItem *)itemAtIndex:(NSInteger)index;
+
+// 可以进行goback操作的页面列表
+@property (nonatomic, readonly, copy) NSArray&lt;WKBackForwardListItem *&gt; *backList;
+
+// 可以进行goforward操作的页面列表
+@property (nonatomic, readonly, copy) NSArray&lt;WKBackForwardListItem *&gt; *forwardList;
+
+@end
+</code></pre><blockquote>
+<p>WKBackForwardListItem</p>
+</blockquote>
+<p>页面导航前进、后退列表项：</p>
+<pre><code>NS_CLASS_AVAILABLE(10_10, 8_0)
+@interface WKBackForwardListItem : NSObject
+
+// 该页面的URL
+@property (readonly, copy) NSURL *URL;
+
+// 该页面的title
+@property (nullable, readonly, copy) NSString *title;
+
+// 初始请求该item的请求的URL
+@property (readonly, copy) NSURL *initialURL;
+
+@end
+</code></pre>
       
     </div>
     <div class="article-info article-info-index">
