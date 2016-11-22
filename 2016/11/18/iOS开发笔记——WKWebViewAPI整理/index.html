@@ -11,7 +11,10 @@
   <meta name="description" content="WKWebView的属性和方法
 WKWebView头文件如下：
 // webView的配置
-@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;">
+@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
+
+// 导航代理
+@property (nullable, nonatomic, weak) id &amp;lt;WKNavigationDelegate&amp;gt">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发笔记——WKWebViewAPI整理">
 <meta property="og:url" content="http://shanyuqin.online/2016/11/18/iOS开发笔记——WKWebViewAPI整理/index.html">
@@ -19,14 +22,20 @@ WKWebView头文件如下：
 <meta property="og:description" content="WKWebView的属性和方法
 WKWebView头文件如下：
 // webView的配置
-@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;">
-<meta property="og:updated_time" content="2016-11-22T03:29:21.000Z">
+@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
+
+// 导航代理
+@property (nullable, nonatomic, weak) id &amp;lt;WKNavigationDelegate&amp;gt">
+<meta property="og:updated_time" content="2016-11-22T03:33:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发笔记——WKWebViewAPI整理">
 <meta name="twitter:description" content="WKWebView的属性和方法
 WKWebView头文件如下：
 // webView的配置
-@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;">
+@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
+
+// 导航代理
+@property (nullable, nonatomic, weak) id &amp;lt;WKNavigationDelegate&amp;gt">
   
     <link rel="alternative" href="/atom.xml" title="Shanyuqin&#39;s Blog" type="application/atom+xml">
   
@@ -169,8 +178,8 @@ WKWebView头文件如下：
 <p>WKWebView头文件如下：</p>
 <pre><code>// webView的配置
 @property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
-</code></pre><a id="more"></a>
-<pre><code>// 导航代理
+
+// 导航代理
 @property (nullable, nonatomic, weak) id &lt;WKNavigationDelegate&gt; navigationDelegate;
 
 // UI交互代理
