@@ -139,6 +139,50 @@
       <div class="body-wrap">
         
   
+    <article id="post-iOS开发笔记——WKWebView和JS交互" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/22/iOS开发笔记——WKWebView和JS交互/">iOS开发笔记——WKWebView和JS交互</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/22/iOS开发笔记——WKWebView和JS交互/" class="archive-article-date">
+  	<time datetime="2016-11-22T03:17:32.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-22</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-iOS开发笔记——WKWebViewAPI整理" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -260,21 +304,21 @@
 #endif
 </code></pre><h3 id="WKWebViewConfiguration-webView的配置"><a href="#WKWebViewConfiguration-webView的配置" class="headerlink" title="WKWebViewConfiguration - webView的配置"></a>WKWebViewConfiguration - webView的配置</h3><hr>
 <p>WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];</p>
-<h4 id="configuration中的一些属性介绍："><a href="#configuration中的一些属性介绍：" class="headerlink" title="configuration中的一些属性介绍："></a>configuration中的一些属性介绍：</h4><blockquote>
+<h4 id="configuration中WK属性："><a href="#configuration中WK属性：" class="headerlink" title="configuration中WK属性："></a>configuration中WK属性：</h4><blockquote>
 <p>WKPreferences偏好设置</p>
 </blockquote>
 <pre><code>// 设置偏好设置
 config.preferences = [[WKPreferences alloc] init];
-// 最小字体大小 默认为0
+// 最小字体大小 默认为0  当将javaScriptEnabled属性设置为NO时，可以看到明显的效果
 config.preferences.minimumFontSize = 10;
 // 是否可以使用javaScri默认认为YES
 config.preferences.javaScriptEnabled = YES;
-// 在iOS上默认为NO，表示不能自动通过窗口打开
+// 在iOS上默认为NO，设置是否允许不经过用户交互由javaScript自动打开窗口
 config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 </code></pre><blockquote>
 <p>WKProcessPool内容处理池</p>
 </blockquote>
-<p>WKProcessPool没有公开的属性或者方法，用处暂时不清楚<br>config.processPool = [[WKProcessPool alloc] init];<br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
+<p>WKProcessPool没有公开的属性或者方法，配置为同一个进程池的WebView会共享数据，例如Cookie、用户凭证等，开发者可以通过编写管理类来分配不同维度的WebView在不同进程池中。<br>config.processPool = [[WKProcessPool alloc] init];<br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
 <blockquote>
 <p>WKUserContentController内容交互控制器</p>
 </blockquote>
@@ -291,7 +335,11 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 - (void)addScriptMessageHandler:(id &lt;WKScriptMessageHandler&gt;)scriptMessageHandler name:(NSString *)name;
 //根据name移除注入的scriptMessageHandler
 - (void)removeScriptMessageHandlerForName:(NSString *)name;
-</code></pre><h6 id="WKUserScript"><a href="#WKUserScript" class="headerlink" title="WKUserScript"></a>WKUserScript</h6><p>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
+</code></pre><blockquote>
+<blockquote>
+<p>WKUserScript<br>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
+</blockquote>
+</blockquote>
 <pre><code>//JS源码
 @property (nonatomic, readonly, copy) NSString *source;
 //JS注入时间
@@ -306,7 +354,41 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     WKUserScriptInjectionTimeAtDocumentEnd //加载结束时注入
 } NS_ENUM_AVAILABLE(10_10, 8_0);
 </code></pre><p>这里有两个概念没有提到分别是<em>WKWebsiteDataStore</em>（存储的web内容）和<em>WKWebsiteDataRecord</em>（website的数据存储记录类型），他们都是iOS9.0以后才可用，之后会对这里进行补充，暂时略过</p>
-<h3 id="WKNavigationDelegate"><a href="#WKNavigationDelegate" class="headerlink" title="WKNavigationDelegate"></a>WKNavigationDelegate</h3><pre><code>@protocol WKNavigationDelegate &lt;NSObject&gt;
+<blockquote>
+<blockquote>
+<p>WKScriptMessageHandler</p>
+</blockquote>
+</blockquote>
+<pre><code>// 注入JS对象名称shanyuqinModel，当JS通过shanyuqinModel来调用并发送数据到iOS端时，
+// 我们可以在WKScriptMessageHandler代理中接收到
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@&quot;shanyuqinModel&quot;]) {
+        NSLog(@&quot;shanyuqinModel.body = %@&quot;,message.body);
+    }
+}
+</code></pre><blockquote>
+<p>WKWebsiteDataStore</p>
+</blockquote>
+<p>WebKit框架采用其本身的缓存框架,iOS9.0以后可用，WKWebsiteDataStore类用来处理数据的存储，其中属性和方法如下：</p>
+<pre><code>@interface WKWebsiteDataStore : NSObject
+//获取默认的存储器 此存储器为持久性的会被写入磁盘
++ (WKWebsiteDataStore *)defaultDataStore;
+//获取一个临时的存储器
++ (WKWebsiteDataStore *)nonPersistentDataStore;
+//存储器是否是临时的
+@property (nonatomic, readonly, getter=isPersistent) BOOL persistent;
+//所有可以存储的类型
++ (NSSet&lt;NSString *&gt; *)allWebsiteDataTypes;
+@end
+</code></pre><h4 id="configuration中的其他属性："><a href="#configuration中的其他属性：" class="headerlink" title="configuration中的其他属性："></a>configuration中的其他属性：</h4><pre><code>//设置是否将网页内容全部加载到内存后再渲染
+@property (nonatomic) BOOL suppressesIncrementalRendering;
+//设置HTML5视频是否允许网页播放 设置为NO则会使用本地播放器
+@property (nullable, nonatomic, copy) NSString *applicationNameForUserAgent API_AVAILABLE(macosx(10.11), ios(9.0));
+//设置是否允许ariPlay播放
+@property (nonatomic) BOOL allowsAirPlayForMediaPlayback API_AVAILABLE(macosx(10.11), ios(9.0));
+//媒体类型
+@property (nonatomic) WKAudiovisualMediaTypes mediaTypesRequiringUserActionForPlayback API_AVAILABLE(macosx(10.12), ios(10.0));
+</code></pre><h3 id="WKNavigationDelegate"><a href="#WKNavigationDelegate" class="headerlink" title="WKNavigationDelegate"></a>WKNavigationDelegate</h3><pre><code>@protocol WKNavigationDelegate &lt;NSObject&gt;
 
 @optional
 
@@ -428,13 +510,6 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler;
 
 @end
-</code></pre><h3 id="WKScriptMessageHandler"><a href="#WKScriptMessageHandler" class="headerlink" title="WKScriptMessageHandler"></a>WKScriptMessageHandler</h3><pre><code>// 注入JS对象名称shanyuqinModel，当JS通过shanyuqinModel来调用并发送数据到iOS端时，
-// 我们可以在WKScriptMessageHandler代理中接收到
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
-    if ([message.name isEqualToString:@&quot;shanyuqinModel&quot;]) {
-        NSLog(@&quot;shanyuqinModel.body = %@&quot;,message.body);
-    }
-}
 </code></pre><h3 id="WKBackForwardList"><a href="#WKBackForwardList" class="headerlink" title="WKBackForwardList"></a>WKBackForwardList</h3><p>WKBackForwardList表示webview中可以前进或者后退的页面列表。其声明如下:</p>
 <pre><code>NS_CLASS_AVAILABLE(10_10, 8_0)
 @interface WKBackForwardList : NSObject
