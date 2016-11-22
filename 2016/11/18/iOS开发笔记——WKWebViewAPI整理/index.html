@@ -16,7 +16,7 @@ WKWebView的属性和方法">
 <meta property="og:site_name" content="Shanyuqin's Blog">
 <meta property="og:description" content="{注：本文是在参考黄一标博客完成的笔记，内容是在其基础上添加了自己的理解完成，查看原文请点击链接}
 WKWebView的属性和方法">
-<meta property="og:updated_time" content="2016-11-22T06:26:40.000Z">
+<meta property="og:updated_time" content="2016-11-22T06:34:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发笔记——WKWebViewAPI整理">
 <meta name="twitter:description" content="{注：本文是在参考黄一标博客完成的笔记，内容是在其基础上添加了自己的理解完成，查看原文请点击链接}
@@ -163,139 +163,19 @@ WKWebView的属性和方法">
 <h3 id="WKWebView的属性和方法"><a href="#WKWebView的属性和方法" class="headerlink" title="WKWebView的属性和方法"></a>WKWebView的属性和方法</h3><hr>
 <a id="more"></a>
 <p>WKWebView头文件如下：</p>
-<pre><code>// webView的配置
-@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
-
-// 导航代理
-@property (nullable, nonatomic, weak) id &lt;WKNavigationDelegate&gt; navigationDelegate;
-
-// UI交互代理
-@property (nullable, nonatomic, weak) id &lt;WKUIDelegate&gt; UIDelegate;
-
-// 页面前进和后退列表
-@property (nonatomic, readonly, strong) WKBackForwardList *backForwardList;
-
-//默认初始化方法
-- (instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
-
-//不会用到
-- (nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;
-
-//加载请求
-- (nullable WKNavigation *)loadRequest:(NSURLRequest *)request;
-
-//加载URL
-- (nullable WKNavigation *)loadFileURL:(NSURL *)URL allowingReadAccessToURL:(NSURL *)readAccessURL API_AVAILABLE(macosx(10.11), ios(9.0));
-
-//加载Html
-- (nullable WKNavigation *)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL;
-
-//加载Data
-- (nullable WKNavigation *)loadData:(NSData *)data MIMEType:(NSString *)MIMEType characterEncodingName:(NSString *)characterEncodingName baseURL:(NSURL *)baseURL API_AVAILABLE(macosx(10.11), ios(9.0));
-
-//前进或者后退到指定页面
-- (nullable WKNavigation *)goToBackForwardListItem:(WKBackForwardListItem *)item;
-
-//页面标题，只读属性，修改需通过KVO
-@property (nullable, nonatomic, readonly, copy) NSString *title;
-
-//当前请求的URL，只读属性，修改需通过KVO
-@property (nullable, nonatomic, readonly, copy) NSURL *URL;
-
-//是否正在加载，只读属性，修改需通过KVO
-@property (nonatomic, readonly, getter=isLoading) BOOL loading;
-
-//加载进度 【0，1】
-@property (nonatomic, readonly) double estimatedProgress;
-
-//标示页面中的所有资源是否通过安全加密链接来加载（这里说的是https么？）
-@property (nonatomic, readonly) BOOL hasOnlySecureContent;
-
-//当前导航的证书链（什么是证书链）
-@property (nonatomic, readonly, nullable) SecTrustRef serverTrust API_AVAILABLE(macosx(10.12), ios(10.0));
-
-//能否执行goBack操作
-@property (nonatomic, readonly) BOOL canGoBack;
-
-//能否执行goForward操作
-@property (nonatomic, readonly) BOOL canGoForward;
-
-//返回上以页面，如果不能返回则什么都不做
-- (nullable WKNavigation *)goBack;
-
-//进入下一页面，如果不能进入则什么都不做
-- (nullable WKNavigation *)goForward;
-
-//重载当前页面
-- (nullable WKNavigation *)reload;
-
-//从原始URL重载
-- (nullable WKNavigation *)reloadFromOrigin;
-
-//停止加载数据
-- (void)stopLoading;
-
-//执行JS源码中的某个方法
-- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler;
-
-//是否支持左、右滑动手势来前进下一页面或后退到上一页面
-@property (nonatomic) BOOL allowsBackForwardNavigationGestures;
-
-//自定义 userAgent，如果没有则为nil （userAgent是什么鬼）
-@property (nullable, nonatomic, copy) NSString *customUserAgent API_AVAILABLE(macosx(10.11), ios(9.0));
-
-//是否允许链接预览 iOS默认为NO
-@property (nonatomic) BOOL allowsLinkPreview API_AVAILABLE(macosx(10.11), ios(9.0));
-
-#if TARGET_OS_IPHONE
-//
-@property (nonatomic, readonly, strong) UIScrollView *scrollView;
-#endif
-
-#if !TARGET_OS_IPHONE
-//是否支持放大手势，默认为NO
-@property (nonatomic) BOOL allowsMagnification;
-
-//放大因子，放大倍数 默认为1
-@property (nonatomic) CGFloat magnification;
-
-//根据设置的书房因子来缩放页面，并居中显示结果在制定的点
-- (void)setMagnification:(CGFloat)magnification centeredAtPoint:(CGPoint)point;
-#endif
-</code></pre><h3 id="WKWebViewConfiguration-webView的配置"><a href="#WKWebViewConfiguration-webView的配置" class="headerlink" title="WKWebViewConfiguration - webView的配置"></a>WKWebViewConfiguration - webView的配置</h3><hr>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webView的配置</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">WKWebViewConfiguration</span> *configuration;</div><div class="line"></div><div class="line"><span class="comment">// 导航代理</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="keyword">id</span> &lt;<span class="built_in">WKNavigationDelegate</span>&gt; navigationDelegate;</div><div class="line"></div><div class="line"><span class="comment">// UI交互代理</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="keyword">id</span> &lt;<span class="built_in">WKUIDelegate</span>&gt; <span class="built_in">UIDelegate</span>;</div><div class="line"></div><div class="line"><span class="comment">// 页面前进和后退列表</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">WKBackForwardList</span> *backForwardList;</div><div class="line"></div><div class="line"><span class="comment">//默认初始化方法</span></div><div class="line">- (<span class="keyword">instancetype</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame configuration:(<span class="built_in">WKWebViewConfiguration</span> *)configuration <span class="built_in">NS_DESIGNATED_INITIALIZER</span>;</div><div class="line"></div><div class="line"><span class="comment">//不会用到</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="keyword">instancetype</span>)initWithCoder:(<span class="built_in">NSCoder</span> *)coder <span class="built_in">NS_DESIGNATED_INITIALIZER</span>;</div><div class="line"></div><div class="line"><span class="comment">//加载请求</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)loadRequest:(<span class="built_in">NSURLRequest</span> *)request;</div><div class="line"></div><div class="line"><span class="comment">//加载URL</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)loadFileURL:(<span class="built_in">NSURL</span> *)URL allowingReadAccessToURL:(<span class="built_in">NSURL</span> *)readAccessURL API_AVAILABLE(macosx(<span class="number">10.11</span>), ios(<span class="number">9.0</span>));</div><div class="line"></div><div class="line"><span class="comment">//加载Html</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)loadHTMLString:(<span class="built_in">NSString</span> *)string baseURL:(<span class="keyword">nullable</span> <span class="built_in">NSURL</span> *)baseURL;</div><div class="line"></div><div class="line"><span class="comment">//加载Data</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)loadData:(<span class="built_in">NSData</span> *)data MIMEType:(<span class="built_in">NSString</span> *)MIMEType characterEncodingName:(<span class="built_in">NSString</span> *)characterEncodingName baseURL:(<span class="built_in">NSURL</span> *)baseURL API_AVAILABLE(macosx(<span class="number">10.11</span>), ios(<span class="number">9.0</span>));</div><div class="line"></div><div class="line"><span class="comment">//前进或者后退到指定页面</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)goToBackForwardListItem:(<span class="built_in">WKBackForwardListItem</span> *)item;</div><div class="line"></div><div class="line"><span class="comment">//页面标题，只读属性，修改需通过KVO</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *title;</div><div class="line"></div><div class="line"><span class="comment">//当前请求的URL，只读属性，修改需通过KVO</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSURL</span> *URL;</div><div class="line"></div><div class="line"><span class="comment">//是否正在加载，只读属性，修改需通过KVO</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">getter</span>=isLoading) <span class="built_in">BOOL</span> loading;</div><div class="line"></div><div class="line"><span class="comment">//加载进度 【0，1】</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="keyword">double</span> estimatedProgress;</div><div class="line"></div><div class="line"><span class="comment">//标示页面中的所有资源是否通过安全加密链接来加载（这里说的是https么？）</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">BOOL</span> hasOnlySecureContent;</div><div class="line"></div><div class="line"><span class="comment">//当前导航的证书链（什么是证书链）</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">nullable</span>) SecTrustRef serverTrust API_AVAILABLE(macosx(<span class="number">10.12</span>), ios(<span class="number">10.0</span>));</div><div class="line"></div><div class="line"><span class="comment">//能否执行goBack操作</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">BOOL</span> canGoBack;</div><div class="line"></div><div class="line"><span class="comment">//能否执行goForward操作</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>) <span class="built_in">BOOL</span> canGoForward;</div><div class="line"></div><div class="line"><span class="comment">//返回上以页面，如果不能返回则什么都不做</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)goBack;</div><div class="line"></div><div class="line"><span class="comment">//进入下一页面，如果不能进入则什么都不做</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)goForward;</div><div class="line"></div><div class="line"><span class="comment">//重载当前页面</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)reload;</div><div class="line"></div><div class="line"><span class="comment">//从原始URL重载</span></div><div class="line">- (<span class="keyword">nullable</span> <span class="built_in">WKNavigation</span> *)reloadFromOrigin;</div><div class="line"></div><div class="line"><span class="comment">//停止加载数据</span></div><div class="line">- (<span class="keyword">void</span>)stopLoading;</div><div class="line"></div><div class="line"><span class="comment">//执行JS源码中的某个方法</span></div><div class="line">- (<span class="keyword">void</span>)evaluateJavaScript:(<span class="built_in">NSString</span> *)javaScriptString completionHandler:(<span class="keyword">void</span> (^ _Nullable)(_Nullable <span class="keyword">id</span>, <span class="built_in">NSError</span> * _Nullable error))completionHandler;</div><div class="line"></div><div class="line"><span class="comment">//是否支持左、右滑动手势来前进下一页面或后退到上一页面</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> allowsBackForwardNavigationGestures;</div><div class="line"></div><div class="line"><span class="comment">//自定义 userAgent，如果没有则为nil （userAgent是什么鬼）</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *customUserAgent API_AVAILABLE(macosx(<span class="number">10.11</span>), ios(<span class="number">9.0</span>));</div><div class="line"></div><div class="line"><span class="comment">//是否允许链接预览 iOS默认为NO</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> allowsLinkPreview API_AVAILABLE(macosx(<span class="number">10.11</span>), ios(<span class="number">9.0</span>));</div><div class="line"></div><div class="line"><span class="meta">#if TARGET_OS_IPHONE</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">UIScrollView</span> *scrollView;</div><div class="line"><span class="meta">#endif</span></div><div class="line"></div><div class="line"><span class="meta">#if !TARGET_OS_IPHONE</span></div><div class="line"><span class="comment">//是否支持放大手势，默认为NO</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">BOOL</span> allowsMagnification;</div><div class="line"></div><div class="line"><span class="comment">//放大因子，放大倍数 默认为1</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> magnification;</div><div class="line"></div><div class="line"><span class="comment">//根据设置的书房因子来缩放页面，并居中显示结果在制定的点</span></div><div class="line">- (<span class="keyword">void</span>)setMagnification:(<span class="built_in">CGFloat</span>)magnification centeredAtPoint:(<span class="built_in">CGPoint</span>)point;</div><div class="line"><span class="meta">#endif</span></div></pre></td></tr></table></figure>
+<h3 id="WKWebViewConfiguration-webView的配置"><a href="#WKWebViewConfiguration-webView的配置" class="headerlink" title="WKWebViewConfiguration - webView的配置"></a>WKWebViewConfiguration - webView的配置</h3><hr>
 <p><code>WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];</code></p>
 <h4 id="configuration中WK属性："><a href="#configuration中WK属性：" class="headerlink" title="configuration中WK属性："></a>configuration中WK属性：</h4><blockquote>
-<p>WKPreferences偏好设置</p>
-</blockquote>
-<pre><code>// 设置偏好设置
-config.preferences = [[WKPreferences alloc] init];
-// 最小字体大小 默认为0  当将javaScriptEnabled属性设置为NO时，可以看到明显的效果
-config.preferences.minimumFontSize = 10;
-// 是否可以使用javaScri默认认为YES
-config.preferences.javaScriptEnabled = YES;
-// 在iOS上默认为NO，设置是否允许不经过用户交互由javaScript自动打开窗口
-config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
-</code></pre><blockquote>
+<p>WKPreferences偏好设置<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 设置偏好设置</span></div><div class="line">config.preferences = [[<span class="built_in">WKPreferences</span> alloc] init];</div><div class="line"><span class="comment">// 最小字体大小 默认为0  当将javaScriptEnabled属性设置为NO时，可以看到明显的效果</span></div><div class="line">config.preferences.minimumFontSize = <span class="number">10</span>;</div><div class="line"><span class="comment">// 是否可以使用javaScri默认认为YES</span></div><div class="line">config.preferences.javaScriptEnabled = <span class="literal">YES</span>;</div><div class="line"><span class="comment">// 在iOS上默认为NO，设置是否允许不经过用户交互由javaScript自动打开窗口</span></div><div class="line">config.preferences.javaScriptCanOpenWindowsAutomatically = <span class="literal">NO</span>;</div></pre></td></tr></table></figure></p>
 <p>WKProcessPool内容处理池</p>
 </blockquote>
 <p>WKProcessPool没有公开的属性或者方法，配置为同一个进程池的WebView会共享数据，例如Cookie、用户凭证等，开发者可以通过编写管理类来分配不同维度的WebView在不同进程池中。<br><code>config.processPool = [[WKProcessPool alloc] init];</code><br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
 <blockquote>
 <p>WKUserContentController内容交互控制器</p>
 </blockquote>
-<p>这个类用于实现JS和webView的内容交互</p>
-<pre><code>//只读属性，所有添加的WKUserScript都在这里可以获取到
-@property (nonatomic, readonly, copy) NSArray&lt;WKUserScript *&gt; *userScripts;
-//注入JS脚本
-- (void)addUserScript:(WKUserScript *)userScript;
-//移除所有注入的JS
-- (void)removeAllUserScripts;
-//添加scriptMessageHandler，之后可以通过
-//window.webkit.messageHandlers.&lt;name.postmessage(&lt;messageBody&gt;)&gt;发送消息
-//比如JS调用我们原生的方法，就可以通过这种方式
-- (void)addScriptMessageHandler:(id &lt;WKScriptMessageHandler&gt;)scriptMessageHandler name:(NSString *)name;
-//根据name移除注入的scriptMessageHandler
-- (void)removeScriptMessageHandlerForName:(NSString *)name;
-</code></pre><blockquote>
+<p>这个类用于实现JS和webView的内容交互<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//只读属性，所有添加的WKUserScript都在这里可以获取到</span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSArray</span>&lt;<span class="built_in">WKUserScript</span> *&gt; *userScripts;</div><div class="line"><span class="comment">//注入JS脚本</span></div><div class="line">- (<span class="keyword">void</span>)addUserScript:(<span class="built_in">WKUserScript</span> *)userScript;</div><div class="line"><span class="comment">//移除所有注入的JS</span></div><div class="line">- (<span class="keyword">void</span>)removeAllUserScripts;</div><div class="line"><span class="comment">//添加scriptMessageHandler，之后可以通过</span></div><div class="line"><span class="comment">//window.webkit.messageHandlers.&lt;name.postmessage(&lt;messageBody&gt;)&gt;发送消息</span></div><div class="line"><span class="comment">//比如JS调用我们原生的方法，就可以通过这种方式</span></div><div class="line">- (<span class="keyword">void</span>)addScriptMessageHandler:(<span class="keyword">id</span> &lt;<span class="built_in">WKScriptMessageHandler</span>&gt;)scriptMessageHandler name:(<span class="built_in">NSString</span> *)name;</div><div class="line"><span class="comment">//根据name移除注入的scriptMessageHandler</span></div><div class="line">- (<span class="keyword">void</span>)removeScriptMessageHandlerForName:(<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure></p>
+<blockquote>
 <p>WKUserScript</p>
 </blockquote>
 <p>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
