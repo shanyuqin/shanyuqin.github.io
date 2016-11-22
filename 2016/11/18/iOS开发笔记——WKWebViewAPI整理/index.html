@@ -16,7 +16,7 @@ WKWebView的属性和方法">
 <meta property="og:site_name" content="Shanyuqin's Blog">
 <meta property="og:description" content="{注：本文是在参考黄一标博客完成的笔记，内容是在其基础上添加了自己的理解完成，查看原文请点击链接}
 WKWebView的属性和方法">
-<meta property="og:updated_time" content="2016-11-22T06:12:53.000Z">
+<meta property="og:updated_time" content="2016-11-22T06:26:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发笔记——WKWebViewAPI整理">
 <meta name="twitter:description" content="{注：本文是在参考黄一标博客完成的笔记，内容是在其基础上添加了自己的理解完成，查看原文请点击链接}
@@ -263,7 +263,7 @@ WKWebView的属性和方法">
 - (void)setMagnification:(CGFloat)magnification centeredAtPoint:(CGPoint)point;
 #endif
 </code></pre><h3 id="WKWebViewConfiguration-webView的配置"><a href="#WKWebViewConfiguration-webView的配置" class="headerlink" title="WKWebViewConfiguration - webView的配置"></a>WKWebViewConfiguration - webView的配置</h3><hr>
-<p>WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];</p>
+<p><code>WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];</code></p>
 <h4 id="configuration中WK属性："><a href="#configuration中WK属性：" class="headerlink" title="configuration中WK属性："></a>configuration中WK属性：</h4><blockquote>
 <p>WKPreferences偏好设置</p>
 </blockquote>
@@ -278,7 +278,7 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 </code></pre><blockquote>
 <p>WKProcessPool内容处理池</p>
 </blockquote>
-<p>WKProcessPool没有公开的属性或者方法，配置为同一个进程池的WebView会共享数据，例如Cookie、用户凭证等，开发者可以通过编写管理类来分配不同维度的WebView在不同进程池中。<br>config.processPool = [[WKProcessPool alloc] init];<br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
+<p>WKProcessPool没有公开的属性或者方法，配置为同一个进程池的WebView会共享数据，例如Cookie、用户凭证等，开发者可以通过编写管理类来分配不同维度的WebView在不同进程池中。<br><code>config.processPool = [[WKProcessPool alloc] init];</code><br>实际上我们也不是必须要创建这个处理池来完成webView的配置</p>
 <blockquote>
 <p>WKUserContentController内容交互控制器</p>
 </blockquote>
@@ -296,10 +296,9 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 //根据name移除注入的scriptMessageHandler
 - (void)removeScriptMessageHandlerForName:(NSString *)name;
 </code></pre><blockquote>
-<blockquote>
-<p>WKUserScript<br>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
+<p>WKUserScript</p>
 </blockquote>
-</blockquote>
+<p>WKUserContentController注入的JS就是一个WKUserScript对象，属性和方法如下： </p>
 <pre><code>//JS源码
 @property (nonatomic, readonly, copy) NSString *source;
 //JS注入时间
@@ -315,9 +314,7 @@ config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
 } NS_ENUM_AVAILABLE(10_10, 8_0);
 </code></pre><p>这里有两个概念没有提到分别是<em>WKWebsiteDataStore</em>（存储的web内容）和<em>WKWebsiteDataRecord</em>（website的数据存储记录类型），他们都是iOS9.0以后才可用，之后会对这里进行补充，暂时略过</p>
 <blockquote>
-<blockquote>
 <p>WKScriptMessageHandler</p>
-</blockquote>
 </blockquote>
 <pre><code>// 注入JS对象名称shanyuqinModel，当JS通过shanyuqinModel来调用并发送数据到iOS端时，
 // 我们可以在WKScriptMessageHandler代理中接收到
